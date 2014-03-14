@@ -1,0 +1,26 @@
+{
+    "name":"wittiws/apc-console",
+    "type":"library",
+    "description":"Console tools to leverage web APC user cache",
+    "keywords":[
+        "xml"
+    ],
+    "homepage":"https://github.com/wittiws/apc-console",
+    "license":"MIT",
+    "authors":[
+        {
+            "name":"Greg Payne",
+            "homepage":"http://www.witti.ws/",
+            "role":"Packager"
+        }
+    ],
+    "require":{
+        "php":">=5.3.3",
+        "symfony/console":"2.4.*"
+    },
+    "autoload":{
+        "psr-4":{
+            "ApcConsole\\": "src/"
+        }
+    }
+}

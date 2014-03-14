@@ -1,0 +1,16 @@
+<?php
+return array(
+  // The URL for the index.php file.
+  // WARNING: Only install this on a firewall-protected port.
+  'url' => 'http://localhost:8801/apc-console/index.php',
+  // Path where the usercache dumpfile should be located.
+  // Note that /run/shm/ (on Ubuntu and others) provides ram-based storage.
+  'usercache_dump' => '/run/shm/apc-console.dump',
+  // Enforce a maximum age of the cache.
+  'usercache_max_age' => 3600,
+  // Enforce a minimum cache size in case the cache is not primed.
+  'usercache_min_size' => 1000000,
+  // Extra security is added by requiring a secret match.
+  // RECOMMENDED: Generate a new secret using uuidgen.
+  'secret' => 'e42c6b8f-9a7b-4937-8bbd-92b4ecba079e',
+);
