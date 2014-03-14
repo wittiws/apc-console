@@ -60,6 +60,7 @@ class ApcConsole {
       'usercache_dump' => '/run/shm/apc-usercache.dump',
       'usercache_max_age' => 600,
       'usercache_min_size' => 0,
+      'usercache_vars' => array(),
       'secret' => uniqid(),
       'conf_path' => NULL,
     ), (array) $conf);
@@ -127,10 +128,10 @@ class ApcConsole {
     }
 
     // Finalize the URL.
-    $url .= '?' . http_build_query($qs);
+    $url .= '?' . http_build_query($qs, '', '&');
 
     // Call the URL.
-    $response = file_get_contents($url);
+    $response = trim(file_get_contents($url));
     return $response;
   }
 
@@ -151,12 +152,15 @@ class ApcConsole {
 
   public function consoleLoadUserCache() {
     if ($this->isUserCacheStale()) {
-      $this->executeConsole('saveusercache');
+      $ret = $this->executeConsole('saveusercache');
     }
     $dumpfile_path = $this->settings['usercache_dump'];
     if (file_exists($dumpfile_path)) {
       $ret = apc_bin_loadfile($dumpfile_path);
       return TRUE;
+    }
+    elseif ($ret !== 'OK') {
+      throw new \Exception("No dump file: " . $ret);
     }
     throw new \ErrorException("Unable to load the usercache dump.");
   }
@@ -179,7 +183,8 @@ class ApcConsole {
       }
 
       touch($lock);
-      apc_bin_dumpfile(array(), NULL, $tmp, LOCK_EX);
+      apc_bin_dumpfile(array(), empty($this->settings['usercache_vars']) ? NULL
+        : $this->settings['usercache_vars'], $tmp, LOCK_EX);
       if (file_exists($tmp)) {
         if (filesize($tmp)) {
           rename($tmp, $path);

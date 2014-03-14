@@ -13,4 +13,8 @@ return array(
   // Extra security is added by requiring a secret match.
   // RECOMMENDED: Generate a new secret using uuidgen.
   'secret' => 'e42c6b8f-9a7b-4937-8bbd-92b4ecba079e',
+  // Define specific vars to transfer
+  // Leave empty to transfer all user variables
+  'usercache_vars' => array(
+  ),
 );
