@@ -156,6 +156,7 @@ class ApcConsole {
     }
     $dumpfile_path = $this->settings['usercache_dump'];
     if (file_exists($dumpfile_path)) {
+      apc_clear_cache('user');
       $ret = apc_bin_loadfile($dumpfile_path);
       return TRUE;
     }
@@ -183,7 +184,15 @@ class ApcConsole {
       }
 
       touch($lock);
-      apc_bin_dumpfile(array(), empty($this->settings['usercache_vars']) ? NULL
+
+      // Suppress the PHP Warning.
+      //   PHP Warning:  apc_bin_dumpfile() [<a href='function.apc-bin-dumpfile'>function.apc-bin-dumpfile</a>]:
+      //   Excluding some files from apc_bin_dump[file].
+      //   Cached files must be included using full path with apc.stat=0.
+      // This message is logged in "5.3.10-1ubuntu3.2 with Suhosin-Patch"
+      // even though we are not attempting to dump any files. It generates
+      // a warning for every file in cache - even though we are not using them.
+      @apc_bin_dumpfile(array(), empty($this->settings['usercache_vars']) ? NULL
         : $this->settings['usercache_vars'], $tmp, LOCK_EX);
       if (file_exists($tmp)) {
         if (filesize($tmp)) {
